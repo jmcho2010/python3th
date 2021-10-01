@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load board_filter %}
+{% block content %}
+<div class="container my-3">
+    <table class="table">
+        <thead>
+            <tr class="thead-dark">
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성일자</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if question_list %} <!-- 분기 시작 -->
+        {% for question in question_list %}<!-- 반복 시작 -->
+            <tr>
+                <!--
+                21.09.27 번호 출력 변경
+                번호 = 전체건수 - 시작인덱스 - 현재인덱스 +1 
+                -->
+                <td>{{ question_list.paginator.count|sub:question_list.start_index| sub:forloop.counter0|add:1}}</td>
+                <td>
+                    <a href="{% url 'board:detail' question.id %}">{{ question.subject }}</a> <!-- 객체출력 (객체.속성) -->
+                </td>
+                <td>{{ question.create_date }}</td>
+            </tr>
+        {% endfor %}<!-- 반복 종료 -->
+        {% else %}
+            <tr>
+                <td>질문이 없습니다.</td>
+            </tr>
+        {% endif %} <!-- 분기종료 -->
+        </tbody>
+    </table>
+    <!-- 페이징처리 시작-->
+    <ul class="pagination justify-content-center">
+        <!-- 이전 페이지
+             hav_previous :이전페이지 유무
+             previous_page_number : 이전페이지 번호
+          -->
+        {% if question_list.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page{{question_list.previous_page_number}}">이전</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" aria-disabled="true" tabindex="-1" href="#">이전</a>
+        </li>
+        {% endif %}
+        <!--이전페이지 처리 끝-->
+        <!-- 페이지리스트-->
+        {% for page_number in question_list.paginator.page_range %}
+        {% if page_number >= question_list.number|add:-5 and page_number <= question_list.number|add:5 %}
+            {% if page_number == question_list.number %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+            {% endif %}
+        {% endif %}
+        {% endfor %}
+        <!-- 페이지리스트 처리 끝-->
+        <!-- 다음페이지 -->
+        {% if question_list.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page{{question_list.next_page_number}}">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" aria-disabled="true" tabindex="-1" href="#">다음</a>
+        </li>
+        {% endif %}
+        <!-- 다음페이지 처리 끝-->
+    </ul>
+    <!-- 페이징처리 끝-->
+    <a href="{% url 'board:question_create' %}" class="btn btn-primary">질문 등록하기</a>
+</div>
+{% endblock %}
+
+<!--
+템플릿 태그 : html에 모델의 속성등을 불러오기 위한 문장.
+1. 분기문(조건문)
+2. 반복문.
+3. 객체출력.
+for문 안에는 forloop라는 객체를 사용할수 있음.
+forloop.counter : 루프 내의 순서로 1부터 표시
+forloop.counter() : 0부터 표시
+forloop.first : 루프 첫번째 순서인 경우 True
+forloop.last : 마지막 순서인경우 True
+-->

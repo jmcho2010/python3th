@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <table class="table">
+        <thead>
+            <tr class="thead-dark">
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성일자</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if question_list %} <!-- 분기 시작 -->
+        {% for question in question_list %}<!-- 반복 시작 -->
+            <tr>
+                <td>{{ forloop.counter}}</td>
+                <td>
+                    <a href="{% url 'board:detail' question.id %}">{{ question.subject }}</a> <!-- 객체출력 (객체.속성) -->
+                </td>
+                <td>{{ question.create_date }}</td>
+            </tr>
+        {% endfor %}<!-- 반복 종료 -->
+        {% else %}
+            <tr>
+                <td>질문이 없습니다.</td>
+            </tr>
+        {% endif %} <!-- 분기종료 -->
+        </tbody>
+    </table>
+    <a href="{% url 'board:question_create' %}" class="btn btn-primary">질문 등록하기</a>
+</div>
+{% endblock %}
+
+<!--
+템플릿 태그 : html에 모델의 속성등을 불러오기 위한 문장.
+1. 분기문(조건문)
+2. 반복문.
+3. 객체출력.
+for문 안에는 forloop라는 객체를 사용할수 있음.
+forloop.counter : 루프 내의 순서로 1부터 표시
+forloop.counter() : 0부터 표시
+forloop.first : 루프 첫번째 순서인 경우 True
+forloop.last : 마지막 순서인경우 True
+-->

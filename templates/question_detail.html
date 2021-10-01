@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <h2 class="border-bottom py-2">{{ question.subject }}</h2>
+    <div class="card my-3">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;">{{ question.content }}</div>
+            <div class="d-flex justify-content-end">
+                <div class="badge badge-light p-2">
+                    {{ question.create_date }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <h5 class="border-bottom my-3 py-2">{{question.answer_set.count}}개의 답변이 있습니다.</h5>
+    {% for answer in question.answer_set.all %}
+    <div class="card my-3">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;">{{ answer.content }}</div>
+            <div class="d-flex justify-content-end">
+                <div class="badge badge-light p-2">
+                    {{ answer.create_date }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <form action="{% url 'board:answer_create' question.id %}" method="post" class="my-3">
+        {% csrf_token %}
+        <div class="form-group">
+            <textarea {% if not user.is_authenticated %}disabled{% endif%}
+                    name="content" id="content" class="form-control" rows="10"></textarea>
+        </div>
+        <input type="submit" value="답변등록" class="btn btn-primary">
+    </form>
+</div>
+{% endblock %}
+<!--
+form : 웹 페이지 사용자로 부터 데이터를 입력받거나
+       사용자가 입력한 데이터를 전송할때 사용하는 태그
+       action="처리할 페이지 주소" method="get|post"
+       form을 통해 입력한 데이터는 action 속성에 명시된 위치로
+       method 속성의 방식을 통해 전달. (보안상 주로 post 방식을 많이 사용)
+method 속성(데이터 전송방식 / form 전달 방식)
+GET : 주소에 데이터를 추가하여 전달하는 방식
+      데이터가 주소 입력창에 그대로 나타남.
+      전송할수 있는 데이터 크기가 제한적.
+      POST 방식에 비해서 속도가 빠르다.
+      주로 중요도가 낮고 크기가 작은 정보를 보낼때 사용.
+POST : 데이터를 별도로 첨부하여 전달하는 방식
+       전송할수 있는 데이터의 크기 제한이 없고. 외부에 드러나지 않음.
+       보안성 및 활용성이 GET 방식 보다 좋다.
+
+csrf_token : 전송한 데이터가 실제 웹 페이지에서 작성한 데이터인지를 판단해주는
+             템플릿 태그의 속성.
+ -->
+

@@ -1,0 +1,23 @@
+{% if form.errors %}
+    {% for field in form %}<!--필드에러 검출-->
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ field.label }}</strong>
+                {{ error }}
+            </div>
+        {% endfor %}
+    {% endfor %} <!-- form for end-->
+    {% for error in form.non_field_errors %} <!-- None필드 에러 검출-->
+            <div class="alert alert-danger">
+                <strong>{{ field.label }}</strong>
+                {{ error }}
+            </div>
+    {% endfor %}
+{% endif %}
+
+<!--
+ 필드에러 : 사용자가 입력한 필드값에 대한 오류. 값이 누락되거나
+           필드의 형식이 일치하지 않는 경우에 발생.
+None필드에러 : 필드값과 상관없이 다른이유 혹은 외부의 원인에 의해 발생하는 에러
+
+ -->
