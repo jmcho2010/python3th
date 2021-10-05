@@ -7,6 +7,7 @@
             <tr class="thead-dark">
                 <th>번호</th>
                 <th>제목</th>
+                <th>글쓴이</th>
                 <th>작성일자</th>
             </tr>
         </thead>
@@ -22,6 +23,7 @@
                 <td>
                     <a href="{% url 'board:detail' question.id %}">{{ question.subject }}</a> <!-- 객체출력 (객체.속성) -->
                 </td>
+                <td>{{ question.author.username }}</td>
                 <td>{{ question.create_date }}</td>
             </tr>
         {% endfor %}<!-- 반복 종료 -->

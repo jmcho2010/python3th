@@ -39,6 +39,15 @@
                 </div>
             </div>
         </div>
+        {% if request.user == answer.author %}
+        <div class="my-3">
+            <a href="{% url 'board:answer_modify' answer.id  %}"
+               class="btn btn-sm btn-outline-secondary">수정</a>
+            <a href="#" class="delete btn btn-sm btn-outline-secondary "
+               data-uri="{% url 'board:answer_delete' answer.id  %}">삭제</a>
+        </div>
+        {% endif %}
+    </div>
     </div>
     {% endfor %}
     <form action="{% url 'board:answer_create' question.id %}" method="post" class="my-3">
