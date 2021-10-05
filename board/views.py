@@ -5,6 +5,7 @@ from .forms import QuestionForm, AnswerForm
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 # Create your views here.
 
 # 메인 페이지 작성
@@ -102,3 +103,30 @@ def answer_create(request, question_id):
         form = AnswerForm()
     context = {'question': question, 'form': form}
     return render(request, 'question_detail.html', context)
+
+# 21.10.05 조준모 질문 수정 기능 추가.
+def question_modify(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    if request.user != question.author:
+        messages.error(request, '수정권한이 없습니다.')
+        return redirect('board:detail', question_id=question.id)
+
+    if request.method == "POST":
+        form = QuestionForm(request.POST, instance=question)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.modify_date = timezone.now()
+            question.save()
+            return redirect('board:detail', question_id=question.id)
+    else:
+        form = QuestionForm(instance=question)
+    return render(request, 'board/question_form.html', {'form': form})
+
+def question_delete(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    # 질문을 한 사람과 글을 작성한 사람이 같은지를 확인.
+    if request.user != question.author:
+        messages.error(request, '삭제권한이 없습니다.')
+        return redirect('board:detail', question_id=question.id)
+    question.delete()
+    return redirect('board:index')

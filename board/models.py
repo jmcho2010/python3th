@@ -24,6 +24,7 @@ class Question(models.Model):
     subject = models.CharField(max_length=200)
     content = models.TextField()
     create_date = models.DateTimeField()
+    modify_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.subject
@@ -32,9 +33,11 @@ class Question(models.Model):
 # content: 답변의 내용
 # create_date : e답변 작성 일시.
 # 컬럼에 null을 허용하고 싶다면 null=True를 추가
+# null=True : 컬럼에 null을 허용하는 속성
+# blank=True : 어떤 조건으로도 값을 비워둘수 있음.
 class Answer(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()
-
+    modify_date = models.DateTimeField(null=True, blank=True)
