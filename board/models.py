@@ -20,11 +20,12 @@ from django.contrib.auth.models import User
 # create_date : 질문을 작성한 일시
 
 class Question(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_question')
     subject = models.CharField(max_length=200)
     content = models.TextField()
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
+    voter = models.ManyToManyField(User, related_name='voter_question') # 추천인
 
     def __str__(self):
         return self.subject
@@ -36,12 +37,12 @@ class Question(models.Model):
 # null=True : 컬럼에 null을 허용하는 속성
 # blank=True : 어떤 조건으로도 값을 비워둘수 있음.
 class Answer(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_answer')
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
-
+    voter = models.ManyToManyField(User, related_name='voter_answer')  # 추천인
 # 질문과 답변에 댓글기능 추가 21.10.05
 # author : 댓글의 글쓴이
 # content : 댓글 내용
