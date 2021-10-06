@@ -34,7 +34,7 @@ class AnswerForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     class Meta:
-        model = Answer
+        model = Comment
         fields = ['content']
         labels = {
             'content': '댓글내용',
