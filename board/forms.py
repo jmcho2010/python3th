@@ -1,5 +1,5 @@
 from django import forms
-from board.models import Question, Answer
+from board.models import Question, Answer, Comment
 
 # 폼
 # 페이지 요청시 전달되는 파라미터들을 쉽게 관리하기위해 사용하는 클래스
@@ -30,4 +30,12 @@ class AnswerForm(forms.ModelForm):
         fields = ['content']
         labels = {
             'content': '답변내용',
+        }
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ['content']
+        labels = {
+            'content': '댓글내용',
         }
