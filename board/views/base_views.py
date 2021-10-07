@@ -1,11 +1,9 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
-from ..models import Question ,Answer, Comment
-from ..forms import QuestionForm, AnswerForm, CommentForm
-from django.http import HttpResponse
 from django.core.paginator import Paginator
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.shortcuts import render
+from django.db.models import Q
+from ..models import Question
+
+
 # Create your views here.
 
 # 메인 페이지 작성
@@ -30,17 +28,25 @@ def index(request):
     # start_index : 현재 페이지 시작 인덱스
     # end_index : 현재 페이지 끝 인덱스
 
-   # 페이지의 입력 파라미터 추가.
+    # 페이지의 입력 파라미터 추가.
     page = request.GET.get('page', '1')
-
+    kw = request.GET.get('kw', '')
     # 조회
     question_list = Question.objects.order_by('-create_date')
+    if kw:
+        question_list = question_list.filter(
+            Q(subject__icontains=kw) | # __icontains : 컬럼의 조회조건 부여
+            Q(content__icontains=kw) |
+            Q(author__username__icontains=kw) |
+            Q(answer__author__username__icontains=kw)
+        ).distinct()
+
 
     # 페이징처리 기능 구현
     pagenator = Paginator(question_list, 10)# 페이지당 10개씩
     page_obj = pagenator.get_page(page)
 
-    context = {'question_list': page_obj}
+    context = {'question_list': page_obj, 'page': page, 'kw': kw}
     return render(request, 'question_list.html', context)
 
 def detail(request, question_id):
